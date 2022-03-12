@@ -2,11 +2,20 @@
 
 Tool to generate color-swatches in Figma from a Leonardo (leonardocolor.io) URL.
 
+### Installation
+
+Clone or download this repo,  
+Open "Manage Plugins..." from Figma,  
+Click the "+" to the right in the "In development" section,
+choose "Import plugin from manifest...",  
+navigate to the folder you just downloaded,  
+select the `manifest.json` file.  
+
+This will make the `klik-adaptive-colors` available under the Developemnt section in the Figma Plugins menu.
+
 ---
 
 ### todo
 
 - [ ] Await JVW: Color of the #hex text
-- [ ] Test other ramps
-- [ ] Type fix UI and generateRamp
-- [ ] Plugin ui design, icons etc.
+- [ ] Type fixes in UI and generateRamp
