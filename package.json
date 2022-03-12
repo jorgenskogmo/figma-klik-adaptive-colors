@@ -4,17 +4,14 @@
   "description": "Adaptive colors tool",
   "main": "dist/plugin.js",
   "scripts": {
-    "build": "rimraf dist && node ./esbuild.js",
-    "test": "jest"
+    "build": "rimraf dist && node ./esbuild.js"
   },
   "license": "MIT",
   "devDependencies": {
     "@figma/plugin-typings": "^1.34.1",
     "esbuild": "^0.12.28",
     "html-minifier-terser": "^6.0.2",
-    "prettier": "^2.4.1",    
     "rimraf": "^3.0.2",
-    "stream": "0.0.2",    
     "typescript": "^4.4.3"
   },
   "dependencies": {

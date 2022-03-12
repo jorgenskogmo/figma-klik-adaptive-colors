@@ -1,17 +1,27 @@
 
+// import { IRampProps } from './generateRamp'
+
+let el_btn, el_textbox, el_mode, el_error;
+
 document.addEventListener(
   'DOMContentLoaded',
   ($event: Event) => {
     
     console.log('DOMContentLoaded')
-    const button = document.querySelector('#btn-generate');
-    button?.addEventListener('click', () => {
+    
+    el_textbox = document.querySelector('#textbox');
+    el_mode    = document.querySelector('#mode');
+    el_btn     = document.querySelector('#btn-generate');
+    el_error   = document.querySelector('#errors');
+
+    el_btn.addEventListener('click', () => {
       console.log('generate')
 
-      const text = document.querySelector('#textbox').value
-      const mode = document.querySelector('#mode').options[ document.querySelector('#mode').selectedIndex ].value
+      const text = el_textbox.value
+      const mode = el_mode.options[ el_mode.selectedIndex ].value
 
       let data = parseInput(text)
+
 
       if( mode !== 'NONE' ){
         data.colorSpace = mode;
@@ -28,7 +38,7 @@ document.addEventListener(
 
 
 const showError = errorMessage => {
-  document.querySelector('#errors').textContent = errorMessage
+  el_error.textContent = errorMessage
 }
 
 const parseInput = (str) => {
