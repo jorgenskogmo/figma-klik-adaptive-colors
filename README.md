@@ -1,6 +1,6 @@
 ## klik-adaptive-colors
 
-Tool to generate color-swatches in Figma from a Leonardo.io URL.
+Tool to generate color-swatches in Figma from a Leonardo (leonardocolor.io) URL.
 
 ---
 

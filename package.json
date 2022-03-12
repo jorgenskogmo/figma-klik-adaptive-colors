@@ -2,6 +2,10 @@
   "name": "figma-klik-adaptive-colors",
   "version": "0.0.1",
   "description": "Adaptive colors tool",
+  "author": {
+    "name": "Jorgen Skogmo",
+    "email": "js@dearstudio.dk"
+  },
   "main": "dist/plugin.js",
   "scripts": {
     "build": "rimraf dist && node ./esbuild.js"

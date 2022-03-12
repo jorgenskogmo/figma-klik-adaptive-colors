@@ -11,4 +11,4 @@ figma.ui.onmessage = (opts : IRampProps) => {
   return drawRamp( generateRamp(opts), opts );
 };
 
-figma.showUI(__html__, {visible: true, height: 240});
+figma.showUI(__html__, {visible: true, height: 320});
