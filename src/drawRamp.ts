@@ -125,14 +125,22 @@ type ISwatchProps = {
     lt: string; // large text rating
     st: string; // small text rating
     a11yc: string; // Purple 800 (mixmatch)
-}  
-  
-  
-export const drawRamp = data => {
+}
+
+const createText = (str:string = 'placeholder', fontSize:number=12, fontName={ family: "Cera Pro", style: "Medium" }) => {
+    let t = figma.createText();
+    t.characters = str;
+    t.fontSize = fontSize;
+    t.fontName = fontName;
+    return t;
+}
+
+export const drawRamp = (data, opts) => {
     console.log('$$drawRamp data', data)
     
     let parent = figma.createFrame();    
     addPropertiesToContainer(parentProperties, parent)
+    parent.name = `${data.name} (Generated)`;
     parent.x = figma.viewport.center.x;
     parent.y = figma.viewport.center.y;
 
@@ -150,5 +158,23 @@ export const drawRamp = data => {
         }
         parent.appendChild( buildBox(item) )
     })
+
+    // append reference code
+    let ref_container = figma.createFrame();
+    addPropertiesToContainer(textContainerProperties, ref_container)
+    ref_container.name = 'Reference Frame';
+    ref_container.layoutMode = 'NONE'
+    ref_container.resize(384, 288);
+    parent.appendChild( ref_container )
+
+    let t_refcode = createText(`Reference Code`, 20)
+    ref_container.appendChild(t_refcode);
+
+    let t_info = createText(`${opts.sourceString}`);
+    t_info.y = 36;
+    t_info.resize(384, 288-36);
+    t_info.textAutoResize = 'HEIGHT';
+    ref_container.appendChild( t_info );
+    
 }
 

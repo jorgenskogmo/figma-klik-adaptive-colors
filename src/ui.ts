@@ -17,6 +17,7 @@ document.addEventListener(
         data.colorSpace = mode;
       }
 
+      data.sourceString = text;
 
       parent.postMessage({ pluginMessage: data }, '*')
     });

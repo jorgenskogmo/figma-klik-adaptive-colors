@@ -16,21 +16,6 @@ esbuild
 
 // iframe UI
 
-// const buildWebComponents = (entryPoints) =>
-//   entryPoints
-//     .map((entryPoint) =>
-//       esbuild.buildSync({
-//         entryPoints: [entryPoint],
-//         bundle: true,
-//         minify: true,
-//         write: false,
-//         target: ['chrome58', 'firefox57', 'safari11', 'edge16'],
-//         format: 'esm'
-//       })
-//     )
-//     .map((componentScript) => componentScript.outputFiles[0].text)
-//     .join('');
-
 (async () => {
   const script = esbuild.buildSync({
     entryPoints: ['src/ui.ts'],
@@ -39,13 +24,6 @@ esbuild
     write: false,
     target: ['chrome58', 'firefox57', 'safari11', 'edge18']
   });
-
-  const componentsScript = ''; /*buildWebComponents([
-    'src/components/checkbox.ts',
-    'src/components/button.ts',
-    'src/components/spinner.ts',
-    'src/components/fonts.ts'
-  ]);*/
 
   const html = await readFile('src/ui.html', 'utf8');
 
@@ -63,6 +41,5 @@ esbuild
   await writeFile(
     'dist/ui.html',
     `<script>${script.outputFiles[0].text}</script>${await minify(html, minifyOptions)}`
-    // `<script>${script.outputFiles[0].text}</script><script type="module">${componentsScript}</script>${await minify(html, minifyOptions)}`
   );
 })();

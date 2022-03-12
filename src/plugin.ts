@@ -1,24 +1,14 @@
 
-import { generateRamp } from './generateRamp';
+import { generateRamp, IRampProps } from './generateRamp';
 import { drawRamp } from './drawRamp';
 
-
 figma.loadFontAsync({ family: "Roboto", style: "Regular" });
-
 figma.loadFontAsync({ family: "Cera Pro", style: "Medium" });
 figma.loadFontAsync({ family: "Cera Pro", style: "Bold" });
 
-figma.ui.onmessage = (opts) => {
-  console.log('$$plugin opts:', opts)
-
-  const data = generateRamp(opts)
-  console.log('$$data:', data)
-
-  const art = drawRamp( data );
-
+figma.ui.onmessage = (opts : IRampProps) => {
   figma.closePlugin();
-
-  return art;
+  return drawRamp( generateRamp(opts), opts );
 };
 
 figma.showUI(__html__, {visible: true, height: 240});

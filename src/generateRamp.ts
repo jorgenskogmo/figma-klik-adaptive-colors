@@ -2,7 +2,7 @@
 import { Color, Theme, createScale, contrast, luminance } from '@adobe/leonardo-contrast-colors';
 import { rgb as d3rgb, color as d3color} from 'd3-color';
 
-type IRampProps = {
+export type IRampProps = {
     baseColor: string[];    // #e2dded
     colorScheme: string;    // "Purple"
     inputRatios: string[];  // ["-1.2", "-1.12", "1", "1.24", "1.52", "1.92", "3", "4.64", "6.96", "8.8", "11.52"]
