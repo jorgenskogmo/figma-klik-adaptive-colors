@@ -1,0 +1,22 @@
+<link rel="stylesheet" href="https://static.figma.com/api/figma-extension-api-0.0.1.css">
+<h2>Paste Leonardo.io string:</h2>
+<p>
+  <input id="textbox" style="width: 100%" placeholder="leonardocolor.io/?..." value="https://leonardocolor.io/?colorKeys=%234c2f92%2C%23000000&base=e2dded&ratios=-1.2%2C-1.12%2C1%2C1.24%2C1.52%2C1.92%2C3%2C4.64%2C6.96%2C8.8%2C11.52&mode=RGB&colorScheme=Purple&colorStops=50%2C75%2C100%2C200%2C300%2C400%2C500%2C600%2C700%2C800%2C900">
+</p>
+<p>
+  Color space interpolation<br />
+  <select id="mode">
+    <option value="NONE">- use mode from string -</option>
+    <option value="RGB">RGB</option>
+    <option value="CAM02">CIECAM02</option>
+    <option value="LCH">Lch</option>
+    <option value="LAB">Lab</option>
+    <option value="HSL">HSL</option>
+    <option value="HSLuv">HSLuv</option>
+    <option value="HSV">HSV</option>
+  </select>
+</p>
+
+<b id="errors"></b>
+<p><button class="primary" id="btn-generate">Generate</button></p>
+
