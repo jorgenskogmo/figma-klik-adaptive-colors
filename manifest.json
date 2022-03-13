@@ -1,5 +1,6 @@
 {
   "name": "klik-adaptive-colors (jorgenskogmo)",
+  "id": "1084749228209059731",
   "api": "1.0.0",
   "main": "dist/plugin.js",
   "ui": "dist/ui.html",

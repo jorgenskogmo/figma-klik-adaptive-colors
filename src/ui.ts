@@ -1,7 +1,20 @@
 
 // import { IRampProps } from './generateRamp'
 
+const DEFAULT_INPUT = 'https://leonardocolor.io/?colorKeys=%234c2f92%2C%23000000&base=e2dded&ratios=-1.2%2C-1.12%2C1%2C1.24%2C1.52%2C1.92%2C3%2C4.64%2C6.96%2C8.8%2C11.52&mode=RGB&colorScheme=Purple&colorStops=50%2C75%2C100%2C200%2C300%2C400%2C500%2C600%2C700%2C800%2C900'
+
 let el_btn, el_textbox, el_mode, el_error;
+
+window.onmessage = (event) => {
+  console.log('UI onmessage', event.data.pluginMessage)
+
+  const msg = event.data.pluginMessage;
+
+  if( msg.type === 'cacheGetResponse' ){
+    el_textbox.value = msg.payload || DEFAULT_INPUT;
+  }
+}
+
 
 document.addEventListener(
   'DOMContentLoaded',
@@ -14,14 +27,17 @@ document.addEventListener(
     el_btn     = document.querySelector('#btn-generate');
     el_error   = document.querySelector('#errors');
 
+    parent.postMessage({ pluginMessage: {type:'cacheGet'} }, '*')
+
     el_btn.addEventListener('click', () => {
       console.log('generate')
 
       const text = el_textbox.value
       const mode = el_mode.options[ el_mode.selectedIndex ].value
 
-      let data = parseInput(text)
+      parent.postMessage({ pluginMessage: {type:'cacheSet', payload:text} }, '*')
 
+      let data = parseInput(text)
 
       if( mode !== 'NONE' ){
         data.colorSpace = mode;
@@ -29,12 +45,14 @@ document.addEventListener(
 
       data.sourceString = text;
 
-      parent.postMessage({ pluginMessage: data }, '*')
+      // parent.postMessage({ pluginMessage: data }, '*')
+      parent.postMessage({ pluginMessage: {type:'generate', payload:data} }, '*')
     });
 
   },
   {once: true}
 );
+
 
 
 const showError = errorMessage => {
