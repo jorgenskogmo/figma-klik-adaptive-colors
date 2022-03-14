@@ -17,5 +17,4 @@ This will make the `klik-adaptive-colors` available under the Developemnt sectio
 
 ### todo
 
-- [ ] Await JVW: Color of the #hex text
 - [ ] Type fixes in UI and generateRamp
