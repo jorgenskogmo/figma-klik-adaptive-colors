@@ -150,6 +150,9 @@ export const drawRamp = (data, opts) => {
     parent.y = figma.viewport.center.y;
 
     data.results.forEach( (_res, i) => {
+
+        const contrastScore = getContrastScores(data.results[i].ratio);
+
         const item: ISwatchProps = {
             name: `${data.name}`, // "Purple"
             step: data.colorStops[i], // 50, 75 ...
@@ -157,8 +160,8 @@ export const drawRamp = (data, opts) => {
             color_hex: data.results[i].color, // contrast color ?
             
             contrast: data.results[i].ratio, // -22.1 // could also use inputRatios
-            lt: 'large text rating', // large text rating
-            st: 'small text rating', // small text rating
+            lt: `(${contrastScore.largeText}) Large Text`, // large text rating
+            st: `(${contrastScore.smallText}) Small Text`, // small text rating
 
             ...getA11yColor( data.colorStops[i], data.colorStops, data.results )
         }
@@ -184,23 +187,16 @@ export const drawRamp = (data, opts) => {
     
 }
 
-/**
-hex a11y logic:
-50,75,100 <- 600
-200 <- 700
-300 <- 700
-400 <- 800
-500 <- 50
-600 <- 100
-700 <- 200
-800 <- 200
-900 <- 300
-*/
+
+//
+// the a11y mapping logic, e.g. what color to use on top of another color
+
 type IA11yColorType = {
     a11y_colorStop: string;
     a11y_color: string;
     a11y_meta: string;
 }
+
 const a11y_map = {
     '<100': {step:"600", meta:"+"},
     '200': {step:"700",  meta:"+"},
@@ -222,14 +218,36 @@ const a11y_map = {
  */
 const getA11yColor = (step: string /* 50, 75.. */, colorStops, results ):IA11yColorType  => {
     const data = parseInt(step) <= 100 ? a11y_map['<100'] : a11y_map[step];
-
     const index = colorStops.indexOf(data.step)
     const res = results[index]
-
     return {
         a11y_colorStop: data.step,
         a11y_color: res.color,
         a11y_meta: data.meta,
     }
+}
 
+
+function getContrastScores(contrast) {
+    let largeText;
+    let smallText;
+    switch (true) {
+        case contrast > 7:
+            largeText = 'AAA';
+            smallText = 'AAA';
+            break;
+        case contrast >= 4.5:
+            largeText = 'AAA';
+            smallText = 'AA';
+            break;
+        case contrast >= 3:
+            largeText = 'AA';
+            smallText = 'N/A';
+            break;
+        default:
+            largeText = 'N/A';
+            smallText = 'N/A';
+            break;
+    }
+    return { largeText, smallText };
 }

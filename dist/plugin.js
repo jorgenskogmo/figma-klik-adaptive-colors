@@ -7087,14 +7087,15 @@ var drawRamp = (data, opts) => {
   parent.x = figma.viewport.center.x;
   parent.y = figma.viewport.center.y;
   data.results.forEach((_res, i) => {
+    const contrastScore = getContrastScores(data.results[i].ratio);
     const item = __spreadValues({
       name: `${data.name}`,
       step: data.colorStops[i],
       color_rgb: hexToRgb(data.results[i].color),
       color_hex: data.results[i].color,
       contrast: data.results[i].ratio,
-      lt: "large text rating",
-      st: "small text rating"
+      lt: `(${contrastScore.largeText}) Large Text`,
+      st: `(${contrastScore.smallText}) Small Text`
     }, getA11yColor(data.colorStops[i], data.colorStops, data.results));
     parent.appendChild(buildBox(item));
   });
@@ -7135,6 +7136,29 @@ var getA11yColor = (step, colorStops, results) => {
     a11y_meta: data.meta
   };
 };
+function getContrastScores(contrast2) {
+  let largeText;
+  let smallText;
+  switch (true) {
+    case contrast2 > 7:
+      largeText = "AAA";
+      smallText = "AAA";
+      break;
+    case contrast2 >= 4.5:
+      largeText = "AAA";
+      smallText = "AA";
+      break;
+    case contrast2 >= 3:
+      largeText = "AA";
+      smallText = "N/A";
+      break;
+    default:
+      largeText = "N/A";
+      smallText = "N/A";
+      break;
+  }
+  return { largeText, smallText };
+}
 
 // src/plugin.ts
 var LS_KEY = "klik-adaptive-colors-storagekey-001";
