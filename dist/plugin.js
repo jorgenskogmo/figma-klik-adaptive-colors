@@ -7050,7 +7050,7 @@ var buildBox = (item) => {
   text_container.y = 24;
   let t_hexCode = createText(`${item.color_hex.toUpperCase()}`, 20);
   t_hexCode.name = "Color Hex value";
-  t_hexCode.fills = [{ color: hexToRgb(item.reverse_hex), type: "SOLID" }];
+  t_hexCode.fills = [{ color: hexToRgb(item.a11y_color), type: "SOLID" }];
   text_container.appendChild(t_hexCode);
   let t_colorStop = createText(`${item.name} ${item.step}`, 31, { family: "Cera Pro", style: "Bold" });
   t_colorStop.name = "Color Title";
@@ -7071,11 +7071,12 @@ var buildBox = (item) => {
 ${item.lt}
 ${item.st}`);
   t_wcag.name = "WCAG 2.1";
+  t_wcag.fills = [{ color: hexToRgb(item.a11y_color), type: "SOLID" }];
   text_container_low.appendChild(t_wcag);
-  let t_a11yc = createText(`(todo) ${item.a11yc}`, 20);
+  let t_a11yc = createText(`A11y Color: ${item.name} ${item.a11y_colorStop} ${item.a11y_meta}`, 20);
   t_a11yc.name = "A11y Color";
+  t_a11yc.fills = [{ color: hexToRgb(item.a11y_color), type: "SOLID" }];
   text_container_low.appendChild(t_a11yc);
-  t_a11yc.fills = [{ color: hexToRgb(item.reverse_hex), type: "SOLID" }];
   return container;
 };
 var drawRamp = (data, opts) => {
@@ -7086,17 +7087,15 @@ var drawRamp = (data, opts) => {
   parent.x = figma.viewport.center.x;
   parent.y = figma.viewport.center.y;
   data.results.forEach((_res, i) => {
-    const item = {
+    const item = __spreadValues({
       name: `${data.name}`,
       step: data.colorStops[i],
       color_rgb: hexToRgb(data.results[i].color),
       color_hex: data.results[i].color,
       contrast: data.results[i].ratio,
       lt: "large text rating",
-      st: "small text rating",
-      a11yc: `todo ${data.results.length} ${data.results.length - (i + 1)}`,
-      reverse_hex: data.results[data.results.length - (i + 1)].color
-    };
+      st: "small text rating"
+    }, getA11yColor(data.colorStops[i], data.colorStops, data.results));
     parent.appendChild(buildBox(item));
   });
   let ref_container = figma.createFrame();
@@ -7114,6 +7113,27 @@ Using ${opts.colorSpace} Colorspace`);
   t_info.resize(384, 288 - 36);
   t_info.textAutoResize = "HEIGHT";
   ref_container.appendChild(t_info);
+};
+var a11y_map = {
+  "<100": { step: "600", meta: "+" },
+  "200": { step: "700", meta: "+" },
+  "300": { step: "700", meta: "+" },
+  "400": { step: "800", meta: "+" },
+  "500": { step: "50", meta: "-" },
+  "600": { step: "100", meta: "-" },
+  "700": { step: "200", meta: "-" },
+  "800": { step: "200", meta: "-" },
+  "900": { step: "300", meta: "-" }
+};
+var getA11yColor = (step, colorStops, results) => {
+  const data = parseInt(step) <= 100 ? a11y_map["<100"] : a11y_map[step];
+  const index = colorStops.indexOf(data.step);
+  const res = results[index];
+  return {
+    a11y_colorStop: data.step,
+    a11y_color: res.color,
+    a11y_meta: data.meta
+  };
 };
 
 // src/plugin.ts

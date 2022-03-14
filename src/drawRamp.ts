@@ -1,5 +1,7 @@
 // conf
 
+import { result } from "lodash";
+
 
 
 const parentProperties = {
@@ -86,7 +88,7 @@ const buildBox = (item: ISwatchProps) => {
     
     let t_hexCode = createText(`${item.color_hex.toUpperCase()}`, 20);
     t_hexCode.name = "Color Hex value";
-    t_hexCode.fills = [{ color: hexToRgb(item.reverse_hex), type: 'SOLID' } as SolidPaint]; // ??TEST
+    t_hexCode.fills = [{ color: hexToRgb(item.a11y_color), type: 'SOLID' } as SolidPaint]; // ??TEST
     text_container.appendChild(t_hexCode);
   
     let t_colorStop = createText(`${item.name} ${item.step}`, 31, { family: "Cera Pro", style: "Bold" });
@@ -110,14 +112,13 @@ const buildBox = (item: ISwatchProps) => {
     
     let t_wcag = createText(`${item.contrast}:1\n${item.lt}\n${item.st}`);
     t_wcag.name = "WCAG 2.1"
+    t_wcag.fills = [{ color: hexToRgb(item.a11y_color), type: 'SOLID' } as SolidPaint];
     text_container_low.appendChild(t_wcag);
 
-    let t_a11yc = createText(`(todo) ${item.a11yc}`, 20);
+    let t_a11yc = createText(`A11y Color: ${item.name} ${item.a11y_colorStop} ${item.a11y_meta}`, 20);
     t_a11yc.name = "A11y Color"
-    text_container_low.appendChild(t_a11yc);
-
-    
-    t_a11yc.fills = [{ color: hexToRgb(item.reverse_hex), type: 'SOLID' } as SolidPaint]; // ??TEST
+    t_a11yc.fills = [{ color: hexToRgb(item.a11y_color), type: 'SOLID' } as SolidPaint];
+    text_container_low.appendChild(t_a11yc);    
   
     return container;
 }
@@ -132,9 +133,10 @@ type ISwatchProps = {
     contrast: number; // -22.1
     lt: string; // large text rating
     st: string; // small text rating
-    a11yc: string; // Purple 800 (mixmatch)
 
-    reverse_hex: string;
+    a11y_colorStop: string;
+    a11y_color: string;
+    a11y_meta: string;
 }
 
 
@@ -157,9 +159,8 @@ export const drawRamp = (data, opts) => {
             contrast: data.results[i].ratio, // -22.1 // could also use inputRatios
             lt: 'large text rating', // large text rating
             st: 'small text rating', // small text rating
-            a11yc: `todo ${data.results.length} ${data.results.length - (i+1)}`, // Purple 800 (mixmatch)
 
-            reverse_hex: data.results[ data.results.length - (i+1)].color,
+            ...getA11yColor( data.colorStops[i], data.colorStops, data.results )
         }
         parent.appendChild( buildBox(item) )
     })
@@ -183,3 +184,52 @@ export const drawRamp = (data, opts) => {
     
 }
 
+/**
+hex a11y logic:
+50,75,100 <- 600
+200 <- 700
+300 <- 700
+400 <- 800
+500 <- 50
+600 <- 100
+700 <- 200
+800 <- 200
+900 <- 300
+*/
+type IA11yColorType = {
+    a11y_colorStop: string;
+    a11y_color: string;
+    a11y_meta: string;
+}
+const a11y_map = {
+    '<100': {step:"600", meta:"+"},
+    '200': {step:"700",  meta:"+"},
+    '300': {step:"700",  meta:"+"},
+    '400': {step:"800",  meta:"+"},
+    '500': {step:"50",   meta:"-"},
+    '600': {step:"100",  meta:"-"},
+    '700': {step:"200",  meta:"-"},
+    '800': {step:"200",  meta:"-"},
+    '900': {step:"300",  meta:"-"},
+};
+/**
+ * 
+ * @param step // "50" | "75" | ...
+ * @param colorStops // ["50", "75", ...] 
+ * @param results // results arg from the ramp
+ * Find the a11y colorStop according to the table above,
+ * return its key (e.g. 600), hex color and meta (e.g "+")
+ */
+const getA11yColor = (step: string /* 50, 75.. */, colorStops, results ):IA11yColorType  => {
+    const data = parseInt(step) <= 100 ? a11y_map['<100'] : a11y_map[step];
+
+    const index = colorStops.indexOf(data.step)
+    const res = results[index]
+
+    return {
+        a11y_colorStop: data.step,
+        a11y_color: res.color,
+        a11y_meta: data.meta,
+    }
+
+}

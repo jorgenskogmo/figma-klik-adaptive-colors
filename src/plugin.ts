@@ -33,9 +33,4 @@ figma.ui.onmessage = (msg:IMessage) => {
   }
 }
 
-// figma.ui.onmessage = (opts : IRampProps) => {
-//   figma.closePlugin();
-//   return drawRamp( generateRamp(opts), opts );
-// };
-
 figma.showUI(__html__, {visible: true, height: 425});
