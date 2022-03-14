@@ -176,13 +176,16 @@ export const drawRamp = (data, opts) => {
     ref_container.resize(384, 288);
     parent.appendChild( ref_container )
 
-    let t_refcode = createText(`Reference Code`, 20)
+    let t_refcode = createText(`Leonardo URL`, 20)
     ref_container.appendChild(t_refcode);
 
-    let t_info = createText(`${opts.sourceString}\n\nUsing ${opts.colorSpace} Colorspace`);
+    // let t_info = createText(`${opts.sourceString}\n\nUsing ${opts.colorSpace} Colorspace`);
+    let t_info = createText(`${opts.sourceString}`);
     t_info.y = 36;
     t_info.resize(384, 288-36);
     t_info.textAutoResize = 'HEIGHT';
+    t_info.hyperlink = {type:"URL", value:opts.sourceString} as HyperlinkTarget;
+    t_info.textDecoration = "UNDERLINE";
     ref_container.appendChild( t_info );
     
 }

@@ -1,7 +1,8 @@
 
 // import { IRampProps } from './generateRamp'
 
-const DEFAULT_INPUT = 'https://leonardocolor.io/?colorKeys=%234c2f92%2C%23000000&base=e2dded&ratios=-1.2%2C-1.12%2C1%2C1.24%2C1.52%2C1.92%2C3%2C4.64%2C6.96%2C8.8%2C11.52&mode=RGB&colorScheme=Purple&colorStops=50%2C75%2C100%2C200%2C300%2C400%2C500%2C600%2C700%2C800%2C900'
+const DEFAULT_INPUT_NAME = 'Scheme Name'
+const DEFAULT_INPUT_URL = 'https://leonardocolor.io/?colorKeys=%234c2f92%2C%23000000&base=e2dded&ratios=-1.2%2C-1.12%2C1%2C1.24%2C1.52%2C1.92%2C3%2C4.64%2C6.96%2C8.8%2C11.52&mode=RGB&colorScheme=Purple&colorStops=50%2C75%2C100%2C200%2C300%2C400%2C500%2C600%2C700%2C800%2C900'
 
 let el_scheme, el_stops, el_btn, el_textbox, el_mode, el_error;
 
@@ -11,7 +12,8 @@ window.onmessage = (event) => {
   const msg = event.data.pluginMessage;
 
   if( msg.type === 'cacheGetResponse' ){
-    el_textbox.value = msg.payload || DEFAULT_INPUT;
+    el_textbox.value = msg.payload?.url || DEFAULT_INPUT_URL;
+    el_scheme.value = msg.payload?.name || DEFAULT_INPUT_NAME;
   }
 }
 
@@ -39,7 +41,12 @@ document.addEventListener(
       const text = el_textbox.value
       const mode = el_mode.options[ el_mode.selectedIndex ].value
 
-      parent.postMessage({ pluginMessage: {type:'cacheSet', payload:text} }, '*')
+      parent.postMessage({ pluginMessage: {type:'cacheSet', 
+        payload: {
+          url:text,
+          name:colorScheme
+        }
+      }}, '*')
 
       let data = parseInput(text)
 

@@ -7105,14 +7105,14 @@ var drawRamp = (data, opts) => {
   ref_container.layoutMode = "NONE";
   ref_container.resize(384, 288);
   parent.appendChild(ref_container);
-  let t_refcode = createText(`Reference Code`, 20);
+  let t_refcode = createText(`Leonardo URL`, 20);
   ref_container.appendChild(t_refcode);
-  let t_info = createText(`${opts.sourceString}
-
-Using ${opts.colorSpace} Colorspace`);
+  let t_info = createText(`${opts.sourceString}`);
   t_info.y = 36;
   t_info.resize(384, 288 - 36);
   t_info.textAutoResize = "HEIGHT";
+  t_info.hyperlink = { type: "URL", value: opts.sourceString };
+  t_info.textDecoration = "UNDERLINE";
   ref_container.appendChild(t_info);
 };
 var a11y_map = {
@@ -7161,20 +7161,22 @@ function getContrastScores(contrast2) {
 }
 
 // src/plugin.ts
-var LS_KEY = "klik-adaptive-colors-storagekey-001";
+var LS_KEY = "klik-adaptive-colors-storagekey-005";
 figma.loadFontAsync({ family: "Roboto", style: "Regular" });
 figma.loadFontAsync({ family: "Cera Pro", style: "Medium" });
 figma.loadFontAsync({ family: "Cera Pro", style: "Bold" });
 figma.ui.onmessage = (msg) => {
   if (msg.type === "cacheSet") {
     console.log("PLUG cacheSet", msg);
-    figma.clientStorage.setAsync(LS_KEY, msg.payload);
+    figma.clientStorage.setAsync(LS_KEY, JSON.stringify(msg.payload));
   }
   if (msg.type === "cacheGet") {
     console.log("PLUG cacheGet", msg);
     figma.clientStorage.getAsync(LS_KEY).then((res) => {
       console.log("PLUG cacheGet then", res);
-      figma.ui.postMessage({ type: "cacheGetResponse", payload: res });
+      const result = res ? JSON.parse(res) : {};
+      console.log("PLUG cacheGet then JSON/result", result);
+      figma.ui.postMessage({ type: "cacheGetResponse", payload: result });
     });
   }
   if (msg.type === "generate") {

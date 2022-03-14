@@ -1,7 +1,7 @@
 import { generateRamp, IRampProps } from './generateRamp';
 import { drawRamp } from './drawRamp';
 
-const LS_KEY = 'klik-adaptive-colors-storagekey-001'
+const LS_KEY = 'klik-adaptive-colors-storagekey-005'
 
 figma.loadFontAsync({ family: "Roboto", style: "Regular" });
 figma.loadFontAsync({ family: "Cera Pro", style: "Medium" });
@@ -16,13 +16,16 @@ figma.ui.onmessage = (msg:IMessage) => {
 
   if( msg.type === 'cacheSet' ){
     console.log('PLUG cacheSet', msg)
-    figma.clientStorage.setAsync(LS_KEY, msg.payload);
+    figma.clientStorage.setAsync(LS_KEY, JSON.stringify(msg.payload));
   }
   if( msg.type === 'cacheGet' ){
     console.log('PLUG cacheGet', msg)
     figma.clientStorage.getAsync(LS_KEY).then( res => {
       console.log('PLUG cacheGet then', res)
-      figma.ui.postMessage({type:'cacheGetResponse', payload:res})
+      
+      const result = res ? JSON.parse(res) : {};
+      console.log('PLUG cacheGet then JSON/result', result )
+      figma.ui.postMessage({type:'cacheGetResponse', payload:result})
     })
   }
   if( msg.type === 'generate' ){
