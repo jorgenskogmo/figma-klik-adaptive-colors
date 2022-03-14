@@ -3,7 +3,7 @@
 
 const DEFAULT_INPUT = 'https://leonardocolor.io/?colorKeys=%234c2f92%2C%23000000&base=e2dded&ratios=-1.2%2C-1.12%2C1%2C1.24%2C1.52%2C1.92%2C3%2C4.64%2C6.96%2C8.8%2C11.52&mode=RGB&colorScheme=Purple&colorStops=50%2C75%2C100%2C200%2C300%2C400%2C500%2C600%2C700%2C800%2C900'
 
-let el_btn, el_textbox, el_mode, el_error;
+let el_scheme, el_stops, el_btn, el_textbox, el_mode, el_error;
 
 window.onmessage = (event) => {
   console.log('UI onmessage', event.data.pluginMessage)
@@ -22,6 +22,8 @@ document.addEventListener(
     
     console.log('DOMContentLoaded')
     
+    el_scheme = document.querySelector('#colorScheme');
+    el_stops = document.querySelector('#colorStops');    
     el_textbox = document.querySelector('#textbox');
     el_mode    = document.querySelector('#mode');
     el_btn     = document.querySelector('#btn-generate');
@@ -32,6 +34,8 @@ document.addEventListener(
     el_btn.addEventListener('click', () => {
       console.log('generate')
 
+      const colorScheme = el_scheme.value
+      const colorStops = el_stops.value
       const text = el_textbox.value
       const mode = el_mode.options[ el_mode.selectedIndex ].value
 
@@ -41,6 +45,14 @@ document.addEventListener(
 
       if( mode !== 'NONE' ){
         data.colorSpace = mode;
+      }
+
+      if( data.colorScheme === undefined ){
+        data.colorScheme = colorScheme
+      }
+
+      if( data.colorStops === undefined ){
+        data.colorStops = colorStops.split(',').map(c => c.trim())
       }
 
       data.sourceString = text;
@@ -76,8 +88,8 @@ const parseInput = (str) => {
 
   const params = parseQuery(str)
   params.inputRatios = params.ratios.split(',');
-  params.colorStops = params.colorStops.split(',');
-  params.colorKeys = params.colorKeys.split(',');
+  params.colorStops = params.colorStops?.split(',');
+  params.colorKeys = params.colorKeys.indexOf(',') > -1 ? params.colorKeys.split(',') : [params.colorKeys];
   params.base = ensureHex6(params.base);
   params.baseColor = params.base;
   params.colorSpace = params.mode;

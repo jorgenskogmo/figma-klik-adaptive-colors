@@ -7184,7 +7184,7 @@ figma.ui.onmessage = (msg) => {
     return drawRamp(generateRamp(opts), opts);
   }
 };
-figma.showUI(__html__, { visible: true, height: 425 });
+figma.showUI(__html__, { visible: true, height: 525 });
 /**
  * chroma.js - JavaScript library for color conversions
  *

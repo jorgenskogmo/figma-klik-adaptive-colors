@@ -33,4 +33,4 @@ figma.ui.onmessage = (msg:IMessage) => {
   }
 }
 
-figma.showUI(__html__, {visible: true, height: 425});
+figma.showUI(__html__, {visible: true, height: 525});

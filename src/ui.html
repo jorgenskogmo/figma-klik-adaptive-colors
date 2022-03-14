@@ -11,7 +11,7 @@
   }
   .leologo {
     display: block;
-    width: 80px;
+    width: 60px;
 
   }
 </style>
@@ -19,8 +19,19 @@
   <img src="https://leonardocolor.io/Leonardo_Logo_sm.b48b194c.svg" class="leologo" />
 </div>
 <p>
+  Name:<br />
+  <input style="width: 100%; padding: 4px;" type="text" id="colorScheme" value="Purple" placeholder="Purple" />
+</p>
+<p>
+  Stops<br />
+  <em>Please ensure same amount as Ratios in the URL</em><br />
+  <input readonly disabled style="width: 100%; padding: 4px;" type="text" id="colorStops" value="50, 75, 100, 200, 300, 400, 500, 600, 700, 800, 900" placeholder="50, 75, 100, 200, 300, 400, 500, 600, 700, 800, 900" />
+</p>
+<p>
   Paste leonardocolor.io string:
   <textarea id="textbox" rows="9" style="width: 100%; padding: 4px;" placeholder="leonardocolor.io/?..." value=""></textarea>
+
+</p>
 
 </p>
 <p>
@@ -36,6 +47,8 @@
     <option value="HSV">HSV</option>
   </select>
 </p>
+
+
 
 <b id="errors"></b>
 
