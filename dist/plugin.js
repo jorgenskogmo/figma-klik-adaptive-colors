@@ -7120,11 +7120,11 @@ var a11y_map = {
   "200": { step: "700", meta: "+" },
   "300": { step: "700", meta: "+" },
   "400": { step: "800", meta: "+" },
-  "500": { step: "50", meta: "-" },
-  "600": { step: "100", meta: "-" },
-  "700": { step: "200", meta: "-" },
-  "800": { step: "200", meta: "-" },
-  "900": { step: "300", meta: "-" }
+  "500": { step: "50", meta: "\u2212" },
+  "600": { step: "100", meta: "\u2212" },
+  "700": { step: "200", meta: "\u2212" },
+  "800": { step: "200", meta: "\u2212" },
+  "900": { step: "300", meta: "\u2212" }
 };
 var getA11yColor = (step, colorStops, results) => {
   const data = parseInt(step) <= 100 ? a11y_map["<100"] : a11y_map[step];
