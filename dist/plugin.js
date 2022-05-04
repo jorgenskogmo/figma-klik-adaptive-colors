@@ -7163,6 +7163,7 @@ function getContrastScores(contrast2) {
 // src/plugin.ts
 var LS_KEY = "klik-adaptive-colors-storagekey-005";
 figma.loadFontAsync({ family: "Roboto", style: "Regular" });
+figma.loadFontAsync({ family: "Inter", style: "Regular" });
 figma.loadFontAsync({ family: "Cera Pro", style: "Medium" });
 figma.loadFontAsync({ family: "Cera Pro", style: "Bold" });
 figma.ui.onmessage = (msg) => {

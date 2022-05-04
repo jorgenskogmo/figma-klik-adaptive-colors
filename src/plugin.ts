@@ -4,6 +4,7 @@ import { drawRamp } from './drawRamp';
 const LS_KEY = 'klik-adaptive-colors-storagekey-005'
 
 figma.loadFontAsync({ family: "Roboto", style: "Regular" });
+figma.loadFontAsync({ family: "Inter", style: "Regular" });
 figma.loadFontAsync({ family: "Cera Pro", style: "Medium" });
 figma.loadFontAsync({ family: "Cera Pro", style: "Bold" });
 
