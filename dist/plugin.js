@@ -7055,7 +7055,7 @@ var buildBox = (item) => {
   addPropertiesToContainer(textProperties, t_hexCode);
   t_hexCode.fills = [{ color: hexToRgb(item.a11y_color), type: "SOLID" }];
   text_container.appendChild(t_hexCode);
-  let t_colorStop = createText(`${item.name} ${item.name}  ${item.name} ${item.step}`, 31, { family: "Cera Pro", style: "Bold" });
+  let t_colorStop = createText(`${item.name} ${item.step}`, 31, { family: "Cera Pro", style: "Bold" });
   t_colorStop.name = "Color Title";
   addPropertiesToContainer(textProperties, t_colorStop);
   t_colorStop.fills = parseInt(item.step) < 500 ? [color_black] : [color_white];
@@ -7117,7 +7117,7 @@ var drawRamp = (data, opts) => {
 var a11y_map = {
   "<100": { step: "600", meta: "+" },
   "200": { step: "700", meta: "+" },
-  "300": { step: "700", meta: "+" },
+  "300": { step: "800", meta: "+" },
   "400": { step: "900", meta: "+" },
   "500": { step: "50", meta: "\u2212" },
   "600": { step: "100", meta: "\u2212" },
