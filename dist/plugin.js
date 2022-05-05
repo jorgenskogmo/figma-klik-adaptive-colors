@@ -6981,36 +6981,6 @@ var ensureColorValueIsProperHex = (value, source = "your colors") => {
 };
 
 // src/drawRamp.ts
-var parentProperties = {
-  layoutMode: "HORIZONTAL",
-  fills: [],
-  itemSpacing: 16,
-  paddingLeft: 0,
-  paddingRight: 0,
-  paddingTop: 0,
-  paddingBottom: 0,
-  primaryAxisSizingMode: "AUTO",
-  counterAxisSizingMode: "AUTO"
-};
-var containerProperties = {
-  layoutMode: "VERTICAL",
-  fills: [],
-  itemSpacing: 0,
-  paddingLeft: 0,
-  paddingRight: 0,
-  paddingTop: 0,
-  paddingBottom: 0,
-  primaryAxisSizingMode: "AUTO",
-  counterAxisSizingMode: "AUTO"
-};
-var textContainerProperties = {
-  layoutMode: "VERTICAL",
-  primaryAxisSizingMode: "FIXED",
-  counterAxisSizingMode: "AUTO",
-  itemSpacing: 8,
-  layoutAlign: "STRETCH",
-  fills: []
-};
 var addPropertiesToContainer = (properties, container) => {
   Object.keys(properties).map((item, key) => {
     container[item] = properties[item];
@@ -7033,49 +7003,78 @@ var createText = (str = "placeholder", fontSize = 12, fontName = { family: "Cera
 };
 var color_black = { color: hexToRgb("#141414"), type: "SOLID" };
 var color_white = { color: hexToRgb("#ffffff"), type: "SOLID" };
+var BOX_WIDTH = 720;
+var BOX_HEIGHT = 352;
+var BOX_PADDING = 24;
+var parentProperties = {
+  layoutMode: "HORIZONTAL",
+  fills: [],
+  itemSpacing: 16,
+  paddingLeft: 0,
+  paddingRight: 0,
+  paddingTop: 0,
+  paddingBottom: 0,
+  primaryAxisSizingMode: "AUTO",
+  counterAxisSizingMode: "AUTO"
+};
+var containerProperties = {
+  layoutMode: "VERTICAL",
+  fills: [],
+  itemSpacing: 0,
+  paddingLeft: BOX_PADDING,
+  paddingRight: BOX_PADDING,
+  paddingTop: BOX_PADDING,
+  paddingBottom: BOX_PADDING,
+  primaryAxisSizingMode: "AUTO",
+  counterAxisSizingMode: "AUTO",
+  cornerRadius: 12,
+  primaryAxisAlignItems: "SPACE_BETWEEN"
+};
+var textContainerProperties = {
+  layoutMode: "VERTICAL",
+  itemSpacing: 8,
+  layoutAlign: "STRETCH",
+  fills: []
+};
+var textProperties = {
+  textAutoResize: "HEIGHT",
+  layoutAlign: "STRETCH"
+};
 var buildBox = (item) => {
   let container = figma.createFrame();
+  container.name = `${item.name} ${item.step}`;
   addPropertiesToContainer(containerProperties, container);
-  container.name = `${item.name} ${item.step} (${item.color_hex})`;
-  container.layoutMode = "NONE";
-  container.resize(384, 288);
-  container.cornerRadius = 12;
+  container.resize(BOX_WIDTH, BOX_HEIGHT);
   container.fills = [{ color: item.color_rgb, type: "SOLID" }];
   let text_container = figma.createFrame();
-  container.appendChild(text_container);
+  text_container.name = "TopText";
   addPropertiesToContainer(textContainerProperties, text_container);
-  text_container.primaryAxisAlignItems = "MIN";
-  text_container.name = "TextFrame";
-  text_container.x = 24;
-  text_container.y = 24;
+  container.appendChild(text_container);
   let t_hexCode = createText(`${item.color_hex.toUpperCase()}`, 20);
   t_hexCode.name = "Color Hex value";
+  addPropertiesToContainer(textProperties, t_hexCode);
   t_hexCode.fills = [{ color: hexToRgb(item.a11y_color), type: "SOLID" }];
   text_container.appendChild(t_hexCode);
-  let t_colorStop = createText(`${item.name} ${item.step}`, 31, { family: "Cera Pro", style: "Bold" });
+  let t_colorStop = createText(`${item.name} ${item.name}  ${item.name} ${item.step}`, 31, { family: "Cera Pro", style: "Bold" });
   t_colorStop.name = "Color Title";
-  if (parseInt(item.step) < 500) {
-    t_colorStop.fills = [color_black];
-  } else {
-    t_colorStop.fills = [color_white];
-  }
+  addPropertiesToContainer(textProperties, t_colorStop);
+  t_colorStop.fills = parseInt(item.step) < 500 ? [color_black] : [color_white];
   text_container.appendChild(t_colorStop);
   let text_container_low = figma.createFrame();
-  container.appendChild(text_container_low);
   text_container_low.name = "Lower Text";
-  text_container_low.x = 24;
-  text_container_low.y = 176;
-  text_container_low.itemSpacing = 0;
   addPropertiesToContainer(textContainerProperties, text_container_low);
+  container.appendChild(text_container_low);
   let t_wcag = createText(`${item.contrast}:1
 ${item.lt}
 ${item.st}`);
   t_wcag.name = "WCAG 2.1";
   t_wcag.fills = [{ color: hexToRgb(item.a11y_color), type: "SOLID" }];
+  addPropertiesToContainer(textProperties, t_wcag);
   text_container_low.appendChild(t_wcag);
   let t_a11yc = createText(`A11y Color: ${item.name} ${item.a11y_colorStop} ${item.a11y_meta}`, 20);
   t_a11yc.name = "A11y Color";
   t_a11yc.fills = [{ color: hexToRgb(item.a11y_color), type: "SOLID" }];
+  addPropertiesToContainer(textProperties, t_a11yc);
   text_container_low.appendChild(t_a11yc);
   return container;
 };

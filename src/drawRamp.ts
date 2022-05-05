@@ -1,8 +1,41 @@
-// conf
+// import { result } from "lodash";
 
-import { result } from "lodash";
+// utils
+
+const addPropertiesToContainer = (properties, container) => {
+  Object.keys(properties).map((item, key) => {
+      container[item] = properties[item];
+  });
+};
+
+function hexToRgb(hex) {
+  var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+  return result ? {
+      r: parseInt(result[1], 16) / 255,
+      g: parseInt(result[2], 16) / 255,
+      b: parseInt(result[3], 16) / 255
+  // } : null;
+  } : {r:255,g:0,b:0};
+}
+
+const createText = (str:string = 'placeholder', fontSize:number=12, fontName={ family: "Cera Pro", style: "Medium" }) => {
+  let t = figma.createText();
+  t.characters = str;
+  t.fontSize = fontSize;
+  t.fontName = fontName;
+  return t;
+}
 
 
+// conf 
+
+const color_black = {color: hexToRgb('#141414'), type: 'SOLID'} as SolidPaint;
+const color_white = {color: hexToRgb('#ffffff'), type: 'SOLID'} as SolidPaint;
+
+
+const BOX_WIDTH = 720;
+const BOX_HEIGHT = 352;
+const BOX_PADDING = 24;
 
 const parentProperties = {
     layoutMode: "HORIZONTAL",
@@ -20,104 +53,77 @@ const containerProperties = {
     layoutMode: "VERTICAL",
     fills: [],
     itemSpacing: 0,
-    paddingLeft: 0,
-    paddingRight: 0,
-    paddingTop: 0,
-    paddingBottom: 0,
+    paddingLeft: BOX_PADDING,
+    paddingRight: BOX_PADDING,
+    paddingTop: BOX_PADDING,
+    paddingBottom: BOX_PADDING,
     primaryAxisSizingMode: 'AUTO',
-    counterAxisSizingMode: 'AUTO'
+    counterAxisSizingMode: 'AUTO',
+    cornerRadius: 12,
+    primaryAxisAlignItems: 'SPACE_BETWEEN',
 }
-  
+
+// applied to Top- and Lower Text containers
 const textContainerProperties = {
     layoutMode: "VERTICAL",
-    primaryAxisSizingMode: 'FIXED',
-    counterAxisSizingMode: 'AUTO',
     itemSpacing: 8,
     layoutAlign: "STRETCH",
-    fills: []
+    fills: [],
 }
 
-// utils
-
-const addPropertiesToContainer = (properties, container) => {
-    Object.keys(properties).map((item, key) => {
-        container[item] = properties[item];
-    });
-};
-  
-function hexToRgb(hex) {
-    var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-    return result ? {
-        r: parseInt(result[1], 16) / 255,
-        g: parseInt(result[2], 16) / 255,
-        b: parseInt(result[3], 16) / 255
-    // } : null;
-    } : {r:255,g:0,b:0};
+// applied to all text elements
+const textProperties = {
+  textAutoResize: 'HEIGHT',
+  layoutAlign: 'STRETCH'
 }
 
-const createText = (str:string = 'placeholder', fontSize:number=12, fontName={ family: "Cera Pro", style: "Medium" }) => {
-    let t = figma.createText();
-    t.characters = str;
-    t.fontSize = fontSize;
-    t.fontName = fontName;
-    return t;
-}
-    
-const color_black = {color: hexToRgb('#141414'), type: 'SOLID'} as SolidPaint;
-const color_white = {color: hexToRgb('#ffffff'), type: 'SOLID'} as SolidPaint;
 
 const buildBox = (item: ISwatchProps) => {
+
+    // draw the colored rect
     let container = figma.createFrame();
+    container.name = `${item.name} ${item.step}`;
     addPropertiesToContainer(containerProperties, container)
-    container.name = `${item.name} ${item.step} (${item.color_hex})`;
-    container.layoutMode = 'NONE'
-    container.resize(384, 288);
-
-    container.cornerRadius = 12;
+    container.resize(BOX_WIDTH, BOX_HEIGHT);    
     container.fills = [{ color: item.color_rgb, type: 'SOLID' } as SolidPaint];
+    
 
-    // upper text
+    // add upper text
 
     let text_container = figma.createFrame();
-    container.appendChild(text_container);
+    text_container.name = 'TopText'
     addPropertiesToContainer(textContainerProperties, text_container)
-    text_container.primaryAxisAlignItems = "MIN";
-    text_container.name = 'TextFrame'
-    text_container.x = 24
-    text_container.y = 24    
+    container.appendChild(text_container);    
     
     let t_hexCode = createText(`${item.color_hex.toUpperCase()}`, 20);
     t_hexCode.name = "Color Hex value";
-    t_hexCode.fills = [{ color: hexToRgb(item.a11y_color), type: 'SOLID' } as SolidPaint]; // ??TEST
+    addPropertiesToContainer(textProperties, t_hexCode)
+    t_hexCode.fills = [{ color: hexToRgb(item.a11y_color), type: 'SOLID' } as SolidPaint];
     text_container.appendChild(t_hexCode);
   
-    let t_colorStop = createText(`${item.name} ${item.step}`, 31, { family: "Cera Pro", style: "Bold" });
+    let t_colorStop = createText(`${item.name} ${item.name}  ${item.name} ${item.step}`, 31, { family: "Cera Pro", style: "Bold" });
     t_colorStop.name = "Color Title"
-    if( parseInt(item.step) < 500 ){
-        t_colorStop.fills = [color_black]
-    }else{
-        t_colorStop.fills = [color_white]
-    }
+    addPropertiesToContainer(textProperties, t_colorStop)
+    t_colorStop.fills = parseInt(item.step) < 500 ? [color_black] : [color_white]
     text_container.appendChild(t_colorStop)
 
-    // lower text
+    // add lower text
 
     let text_container_low = figma.createFrame();
-    container.appendChild( text_container_low );
     text_container_low.name = 'Lower Text';
-    text_container_low.x = 24
-    text_container_low.y = 176
-    text_container_low.itemSpacing = 0;
     addPropertiesToContainer(textContainerProperties, text_container_low)
+    container.appendChild( text_container_low );
     
     let t_wcag = createText(`${item.contrast}:1\n${item.lt}\n${item.st}`);
     t_wcag.name = "WCAG 2.1"
     t_wcag.fills = [{ color: hexToRgb(item.a11y_color), type: 'SOLID' } as SolidPaint];
+    addPropertiesToContainer(textProperties, t_wcag)
     text_container_low.appendChild(t_wcag);
 
     let t_a11yc = createText(`A11y Color: ${item.name} ${item.a11y_colorStop} ${item.a11y_meta}`, 20);
     t_a11yc.name = "A11y Color"
     t_a11yc.fills = [{ color: hexToRgb(item.a11y_color), type: 'SOLID' } as SolidPaint];
+    addPropertiesToContainer(textProperties, t_a11yc)
     text_container_low.appendChild(t_a11yc);    
   
     return container;
@@ -204,7 +210,7 @@ const a11y_map = {
     '<100': {step:"600", meta:"+"},
     '200': {step:"700",  meta:"+"},
     '300': {step:"700",  meta:"+"},
-    '400': {step:"900",  meta:"+"},
+    '400': {step:"900",  meta:"+"}, // was: 800
     '500': {step:"50",   meta:"−"},
     '600': {step:"100",  meta:"−"},
     '700': {step:"200",  meta:"−"},
